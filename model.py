@@ -113,9 +113,36 @@ Scrie un mesaj scurt (2-3 paragrafe) adresat utilizatorului în care să incluzi
 2. Explică foarte clar și ferm că acesta NU este un diagnostic medical, ci doar o estimare oferită de o aplicație AI.
 3. Sfătuiește utilizatorul ca pasul următor și cel mai important este să consulte un medic dermatolog pentru un diagnostic precis și tratament.
 """
-response = client.models.generate_content(
+from google.genai import types
+
+chat = client.chats.create(
     model="gemini-3.6-flash",
-    contents=prompt,
+    config=types.GenerateContentConfig(
+        system_instruction=prompt 
+    )
 )
 
+response = chat.send_message(prompt)
 print(response.text)
+
+
+print("\nAi întrebări neclarități despre termenii de mai sus? Scrie 'ieși' pentru a închide.\n")
+
+while True:
+    user_input = input("Tu: ")
+    
+    if user_input.lower() in ["ieși", "exit", "quit"]:
+        print("La revedere!")
+        break
+        
+    if not user_input.strip():
+        continue
+
+    try:
+        bot_response = chat.send_message(user_input)
+        print(f"\n: {bot_response.text}\n")
+    except Exception as e:
+        print(f"\nEroare: {e}\n")
+
+
+
