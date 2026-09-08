@@ -1,12 +1,4 @@
-"""
-Aplicație de pre-diagnosticare dermatologică (AI-asistată).
-Rulare locală:
-    streamlit run app.py
 
-Fișiere necesare în același director:
-    - classifier_weights.pth
-    - label_encoder.joblib
-"""
 
 import os
 import io
@@ -22,9 +14,6 @@ from google import genai
 from google.genai import types
 
 
-# --------------------------------------------------------------------------
-# Configurare pagină + stil
-# --------------------------------------------------------------------------
 st.set_page_config(
     page_title="DermAI · Pre-diagnosticare",
     page_icon="🩺",
@@ -87,10 +76,6 @@ st.markdown(
 )
 st.write("")
 
-
-# --------------------------------------------------------------------------
-# Dicționar clase
-# --------------------------------------------------------------------------
 DICTIONAR_CLASE = {
     "nv": "Nev melanocitar (aluniță benignă)",
     "bcc": "Carcinom bazocelular",
@@ -105,9 +90,6 @@ DICTIONAR_CLASE = {
 }
 
 
-# --------------------------------------------------------------------------
-# Încărcare model + label encoder (cache -> se încarcă o singură dată)
-# --------------------------------------------------------------------------
 @st.cache_resource(show_spinner="Se încarcă modelul AI...")
 def load_model(weights_path: str = "classifier_weights.pth", num_classes: int = 10):
     model = models.efficientnet_b3(weights=None)
@@ -162,9 +144,6 @@ Scrie un mesaj scurt (2-3 paragrafe) adresat utilizatorului în care să incluzi
 """
 
 
-# --------------------------------------------------------------------------
-# Sidebar — configurare
-# --------------------------------------------------------------------------
 with st.sidebar:
     st.header("⚙️ Configurare")
     api_key = st.text_input(
@@ -183,9 +162,7 @@ with st.sidebar:
     )
 
 
-# --------------------------------------------------------------------------
-# Stare sesiune
-# --------------------------------------------------------------------------
+
 if "chat" not in st.session_state:
     st.session_state.chat = None
 if "history" not in st.session_state:
@@ -194,9 +171,7 @@ if "analizat" not in st.session_state:
     st.session_state.analizat = False
 
 
-# --------------------------------------------------------------------------
-# Câmpuri principale: imagine + descriere
-# --------------------------------------------------------------------------
+
 col1, col2 = st.columns([1, 1])
 
 with col1:
@@ -221,9 +196,7 @@ with col2:
 analizeaza = st.button("🔍 Analizează", type="primary", use_container_width=True)
 
 
-# --------------------------------------------------------------------------
-# Analiză
-# --------------------------------------------------------------------------
+#
 if analizeaza:
     if uploaded_file is None:
         st.warning("Te rog încarcă o imagine înainte de a analiza.")
@@ -284,9 +257,6 @@ if analizeaza:
                 st.error(f"Eroare la apelul API: {e}")
 
 
-# --------------------------------------------------------------------------
-# Afișare mesaj AI + chat de întrebări suplimentare
-# --------------------------------------------------------------------------
 if st.session_state.history:
     st.subheader("💬 Explicație și discuție")
 
